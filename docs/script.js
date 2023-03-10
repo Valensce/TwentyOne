@@ -3,7 +3,6 @@ let faces = ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k'];
 let deck = [];
 let values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 //create arrays to store the different suit and face values
-let total = 0;
 let win = 0;
 let round = 1;
 //sets up the initial scores
@@ -46,12 +45,13 @@ function shuffleDeck(){
     deck[i] = deck[j];
     deck[j] = temp;
     }
+    //shuffles the array 'deck[]'
 }
 
-//this function sets up the start of a new game
+//this function sets up the start of index page
 function init(){
-    total = 0;
-    //local total is 0
+    round = 0;
+    //local round is 0
 }
 
 function dealCard(cards){
@@ -68,17 +68,24 @@ function dealCard(cards){
     document.getElementById('dealerCard' + 2).src = 'images/cb.png';
     //dealer's side of game is set up manually because one card must be hidden (i.e., cb.png)
 
-    for(let u = 0 ; u < 2; u++){
+    for(let u = 0; u < 2; u++){
         document.getElementById('playerCard' + (1 + u)).src = 'images/' + playerHand[u].face + playerHand[u].suit + '.png';
     }
     //player's side is looped to increase maintainability
 }
 
 function hit(cards){
-    let u = 4;
-    u = u++;
-    console.log(cards[u]);
-    playerHand.push(cards[u]);
+    playerValue();
+
+    if (pValue < 21) {
+        for(let i = 0; i < playerHand.length; i++) {
+            document.getElementById('playerCard' + (1 + i)).src = 'images/' + playerHand[i].face + playerHand[i].suit + '.png';
+        }
+        } else {
+                document.getElementById('hit').style.display = 'none';
+                document.getElementById('sit').style.display = 'none';
+                sit();
+        }
 }
 
 function sit(){
@@ -87,6 +94,18 @@ function sit(){
     dealerValue();
     playerValue();
     //calls dealerValue() and playerValue() to display values for each user
+    results();
+}
+
+function results() {
+    if (pValue > dValue) {
+        win = 1;
+    }
+    
+}
+function nextRound() {
+    round ++;
+    document.getElementById('round').innerHTML = "Round:" + round;
 }
 
 function dealerValue() {

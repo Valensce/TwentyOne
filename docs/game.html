@@ -9,7 +9,7 @@
     <title>Twenty One</title>
 </head>
 <body onload = "createDeck() + shuffleDeck() + dealCard(deck)">
-    <h1 align = "center">ROUND: 1</h1>
+    <h1 id = "round" align = "center">ROUND: 1</h1>
 
     <div id="cardtray" class="cards">
         <div id = "dealerHand">
@@ -24,9 +24,9 @@
             <img src = "" alt = "" id = "playerCard2" class = "playerHand">
         </div>
     </div>
-    <div id="btntray" class="btns" align="center">
-        <input type="button" value="Hit" onclick="hit()">
-        <input type="button" value="Sit" onclick="sit()">
+    <div id = "btntray" class = "btns" align = "center">
+        <input type = "button" value = "Hit" id = "hit" onclick = "hit()">
+        <input type = "button" value = "Sit" id = "sit" onclick = "sit()">
     </div>
 
     <script src="script.js"></script>
