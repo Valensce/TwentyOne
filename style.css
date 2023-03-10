@@ -1,0 +1,29 @@
+body{
+    background-color: #169809;
+}
+.toTitle {
+    color: #ffffff;
+  }
+.dealerHand {
+    float: left;
+    width: 125px;
+    padding: 10px;
+}
+.playerHand {
+    float: right;
+    width: 125px;
+    padding: 10px;
+}
+.cards {
+    display: flex;
+    margin: 10px;
+    padding: 20px;
+}
+.rules {
+    text-align: center;
+    padding: 100;
+    color:#ffffff
+}
+.backbtn {
+    float: left;
+}

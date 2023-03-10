@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Twenty One</title>
+</head>
+<body onload = "createDeck() + shuffleDeck() + dealCard(deck)">
+    <h1 align = "center">ROUND: 1</h1>
+
+    <div id="cardtray" class="cards">
+        <div id = "dealerHand">
+            <h1 id = "dealerScore">DEALER:</h1>
+            <img src = "" alt = "" id = "dealerCard1" class = "dealerHand">
+            <img src = "" alt = "" id = "dealerCard2" class = "dealerHand">
+
+        </div>
+        <div id = "playerHand">
+            <h1 id = "playerScore">PLAYER:</h1>
+            <img src = "" alt = "" id = "playerCard1" class = "playerHand">
+            <img src = "" alt = "" id = "playerCard2" class = "playerHand">
+        </div>
+    </div>
+    <div id="btntray" class="btns" align="center">
+        <input type="button" value="Hit" onclick="hit()">
+        <input type="button" value="Sit" onclick="sit()">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
