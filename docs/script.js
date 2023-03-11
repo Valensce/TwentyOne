@@ -4,11 +4,15 @@ let deck = [];
 let values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 //create arrays to store the different suit and face values
 let win = 0;
-let round = 1;
 //sets up the initial scores
-let j;
+let round = 1;
+//sets up the initial round number
 let playerHand = [];
 let dealerHand = [];
+//sets the hand of player and dealer
+let playerCards = [];
+let dealerCards = [];
+//sets the an array for which the user's hand draws from
 let dealerScore;
 let playerScore;
 //sets the number of wins for the respective user
@@ -69,6 +73,7 @@ function dealCard(cards){
     //dealer's side of game is set up manually because one card must be hidden (i.e., cb.png)
 
     for(let u = 0; u < 2; u++){
+        playerHand.push(deck[u]);
         document.getElementById('playerCard' + (1 + u)).src = 'images/' + playerHand[u].face + playerHand[u].suit + '.png';
     }
     //player's side is looped to increase maintainability
@@ -76,15 +81,13 @@ function dealCard(cards){
 
 function hit(cards){
     playerValue();
-
+    playerHand.push(cards[2], cards[3], cards[4]);
     if (pValue < 21) {
-        for(let i = 0; i < playerHand.length; i++) {
+        for(let i = 0; i < playerHand.length + 1; i++) {
             document.getElementById('playerCard' + (1 + i)).src = 'images/' + playerHand[i].face + playerHand[i].suit + '.png';
         }
         } else {
-                document.getElementById('hit').style.display = 'none';
-                document.getElementById('sit').style.display = 'none';
-                sit();
+                results();
         }
 }
 
@@ -98,14 +101,54 @@ function sit(){
 }
 
 function results() {
-    if (pValue > dValue) {
-        win = 1;
+    // console.log(pValue);
+    // console.log(dValue);
+    if (pValue > 21) {
+        win = win;
+        round = round++;
+        document.getElementById('hit').style.display = 'none';
+        document.getElementById('sit').style.display = 'none';
+        document.getElementById('outcome').innerHTML = "Player went bust!";
+        document.getElementById('next').style.display = 'inline-block';
     }
-    
+    else if (pValue > dValue) {
+        win = win++;
+        document.getElementById('hit').style.display = 'none';
+        document.getElementById('sit').style.display = 'none';
+        document.getElementById('outcome').innerHTML = "Player wins!";
+        document.getElementById('next').style.display = 'inline-block';
+    }
+    else if (pValue == dValue) {
+        win = win;
+        round = round++
+        document.getElementById('hit').style.display = 'none';
+        document.getElementById('sit').style.display = 'none';
+        document.getElementById('outcome').innerHTML = "Player ties with dealer!";
+        document.getElementById('next').style.display = 'inline-block';
+    }
+    else {
+        win = win;
+        round = round++
+        document.getElementById('hit').style.display = 'none';
+        document.getElementById('sit').style.display = 'none';
+        document.getElementById('outcome').innerHTML = "Dealer wins!";
+        document.getElementById('next').style.display = 'inline-block';
+    }
+    dealerScore = round - win;
+    playerScore = win;
+    console.log(dealerScore);
+    console.log(playerScore);
 }
+
 function nextRound() {
     round ++;
+    shuffleDeck();
+    dealCard();
     document.getElementById('round').innerHTML = "Round:" + round;
+    document.getElementById('outcome').innerHTML = "none";
+    document.getElementById('next').style.display = "none";
+    document.getElementById('hit').style.display = 'Hit';
+    document.getElementById('sit').style.display = 'Sit';
 }
 
 function dealerValue() {
@@ -116,7 +159,7 @@ function dealerValue() {
     }
     document.getElementById('dealerScore').innerHTML = "Dealer's value = " + dValue;
     return dValue;
-    }
+}
       
 function playerValue() {
     for (let i = 0; i < playerHand.length; i++) {
