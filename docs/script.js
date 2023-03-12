@@ -4,6 +4,8 @@ let deck = [];
 let values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 //create arrays to store the different suit and face values
 let win = 0;
+let tie = 0;
+let winner;
 //sets up the initial scores
 let round = 1;
 //sets up the initial round number
@@ -19,7 +21,7 @@ let playerScore;
 let pValue = 0;
 let dValue = 0;
 //sets the hand values for the respective user
-
+let cardCount;
 
 function createDeck(){
     for (let i = 0; i < suits.length; i++) {
@@ -58,36 +60,41 @@ function init(){
     //local round is 0
 }
 
-function dealCard(cards){
-    dealerHand.push(cards[0], cards[1]);
-    //appends the first two cards of shuffledDeck to dealerHand
-    playerHand.push(cards[2], cards[3]);
-    //appends the next two cards of shuffledDeck to playerHand
-
-    console.log(playerHand);
-    console.log(dealerHand);
-    //logged for debugging
-
-    document.getElementById('dealerCard' + 1).src = 'images/' + dealerHand[0].face + dealerHand[0].suit + '.png';
-    document.getElementById('dealerCard' + 2).src = 'images/cb.png';
-    //dealer's side of game is set up manually because one card must be hidden (i.e., cb.png)
-
+function dealCard() {
     for(let u = 0; u < 2; u++){
         playerHand.push(deck[u]);
         document.getElementById('playerCard' + (1 + u)).src = 'images/' + playerHand[u].face + playerHand[u].suit + '.png';
     }
     //player's side is looped to increase maintainability
+
+    dealerHand.push(deck[2], deck[3]);
+    //append the next two cards from deck to dealerHand
+    cardCount = 3;
+    //a variable used for the hit function later
+
+    console.log(playerHand);
+    console.log(dealerHand);
+
+    document.getElementById('dealerCard' + 1).src = 'images/' + dealerHand[0].face + dealerHand[0].suit + '.png';
+    document.getElementById('dealerCard' + 2).src = 'images/cb.png';
+    //dealer's side of game is set up manually because one card must be hidden (i.e., cb.png)
+
 }
 
-function hit(cards){
-    playerValue();
-    playerHand.push(cards[2], cards[3], cards[4]);
+function hit(){
+    cardCount = cardCount++;
+    //cardCount increases for iterative purposes
+    playerHand.push(deck[cardCount]);
     if (pValue < 21) {
-        for(let i = 0; i < playerHand.length + 1; i++) {
-            document.getElementById('playerCard' + (1 + i)).src = 'images/' + playerHand[i].face + playerHand[i].suit + '.png';
+        document.getElementById('playerCard' + (cardCount - 1)).src = 'images/' + playerHand[cardCount].face + playerHand[cardCount].suit + '.png';
+        document.getElementById('playerCard' + (cardCount - 1)).style.display = 'inline-block';
+        //the playerCardID will always be one less than that of cardCount
+        //for instance, when cardCount is 4, playerCardID=(4-1) is called, which is playerCard3
         }
-        } else {
+        else if (pValue > 21) {
                 results();
+                playerValue();
+                dealerValue()
         }
 }
 
@@ -101,18 +108,21 @@ function sit(){
 }
 
 function results() {
-    // console.log(pValue);
-    // console.log(dValue);
+
     if (pValue > 21) {
         win = win;
-        round = round++;
+        tie = tie;
+        document.getElementById('dealerCard' + 2).src = 'images/' + dealerHand[1].face + dealerHand[1].suit + '.png';
+        //since the round is already over, the dealer's hidden card can be revealed
         document.getElementById('hit').style.display = 'none';
         document.getElementById('sit').style.display = 'none';
-        document.getElementById('outcome').innerHTML = "Player went bust!";
+        document.getElementById('outcome').innerHTML = "Player went bust, Dealer wins!";
         document.getElementById('next').style.display = 'inline-block';
     }
     else if (pValue > dValue) {
         win = win++;
+        tie = tie;
+        document.getElementById('dealerCard' + 2).src = 'images/' + dealerHand[1].face + dealerHand[1].suit + '.png';
         document.getElementById('hit').style.display = 'none';
         document.getElementById('sit').style.display = 'none';
         document.getElementById('outcome').innerHTML = "Player wins!";
@@ -120,7 +130,8 @@ function results() {
     }
     else if (pValue == dValue) {
         win = win;
-        round = round++
+        tie = tie++;
+        document.getElementById('dealerCard' + 2).src = 'images/' + dealerHand[1].face + dealerHand[1].suit + '.png';
         document.getElementById('hit').style.display = 'none';
         document.getElementById('sit').style.display = 'none';
         document.getElementById('outcome').innerHTML = "Player ties with dealer!";
@@ -128,27 +139,48 @@ function results() {
     }
     else {
         win = win;
-        round = round++
+        tie = tie;
+        document.getElementById('dealerCard' + 2).src = 'images/' + dealerHand[1].face + dealerHand[1].suit + '.png';
         document.getElementById('hit').style.display = 'none';
         document.getElementById('sit').style.display = 'none';
         document.getElementById('outcome').innerHTML = "Dealer wins!";
         document.getElementById('next').style.display = 'inline-block';
     }
-    dealerScore = round - win;
+    dealerScore = round - win - tie;
     playerScore = win;
-    console.log(dealerScore);
-    console.log(playerScore);
+
+    document.getElementById('outcome').innerHTML += "<br> Player score: " + playerScore + "<br> Dealer score:" + dealerScore;
 }
 
 function nextRound() {
-    round ++;
-    shuffleDeck();
-    dealCard();
-    document.getElementById('round').innerHTML = "Round:" + round;
-    document.getElementById('outcome').innerHTML = "none";
-    document.getElementById('next').style.display = "none";
-    document.getElementById('hit').style.display = 'Hit';
-    document.getElementById('sit').style.display = 'Sit';
+    if (round <= 7) {
+        round++;
+        playerHand = [];
+        dealerHand = [];
+        cardCount = 0;
+        shuffleDeck();
+        dealCard();
+
+        document.getElementById('round').innerHTML = "Round: " + round;
+        document.getElementById('outcome').innerHTML = "";
+        document.getElementById('next').style.display = "none";
+        document.getElementById('playerValue').innerHTML = "Player:";
+        document.getElementById('dealerValue').innerHTML = "Dealer:";
+        document.getElementById('hit').style.display = 'inline-block';
+        document.getElementById('sit').style.display = 'inline-block';
+    }
+    else {
+        if (dealerScore > playerScore) {
+            winner = "Dealer!";
+        }
+        else if (playerScore > dealerScore) {
+            winner = "Player!";
+        }
+        else {
+            winner = "Player tied with dealer!"
+        }
+        document.getElementById('cardtray').innerHTML = "Best of seven hands goes to: <br>" + winner;
+    }
 }
 
 function dealerValue() {
@@ -157,7 +189,7 @@ function dealerValue() {
         dValue += dealerHand[i].value;
         //console.log(dValue);
     }
-    document.getElementById('dealerScore').innerHTML = "Dealer's value = " + dValue;
+    document.getElementById('dealerValue').innerHTML = "Dealer's value = " + dValue;
     return dValue;
 }
       
@@ -165,6 +197,6 @@ function playerValue() {
     for (let i = 0; i < playerHand.length; i++) {
         pValue += playerHand[i].value;
     }
-    document.getElementById('playerScore').innerHTML = "Your value = " + pValue;
+    document.getElementById('playerValue').innerHTML = "Your value = " + pValue;
     return pValue;
 }
